@@ -1,4 +1,4 @@
-package z.cn.hula2048;
+package cn.rz.ai2048;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -161,9 +161,9 @@ public class MainActivity extends Activity {
             Uri uri = Uri.fromFile(new File(fileName));
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
             shareIntent.putExtra(Intent.EXTRA_TEXT,
-                    "这2048 也太容易了！http://0xmiracle.sinaapp.com/game/2048.php");
+                    "这2048 也太容易了！https://github.com/isee15/2048-with-AI-and-undo");
             shareIntent.putExtra("Kdescription",
-                    "这2048 也太容易了！http://0xmiracle.sinaapp.com/game/2048.php");
+                    "这2048 也太容易了！https://github.com/isee15/2048-with-AI-and-undo");
             startActivity(Intent.createChooser(shareIntent, "分享到"));
             return true;
         }

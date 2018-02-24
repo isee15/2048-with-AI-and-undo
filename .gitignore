@@ -1,5 +1,4 @@
 # Built application files
-*.apk
 *.ap_
 
 # Files for the Dalvik VM
@@ -34,3 +33,5 @@ proguard/
 
 # Log Files
 *.log
+
+.externalNativeBuild/

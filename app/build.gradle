@@ -1,28 +1,19 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        ccsign {
-            keyAlias '2048'
-            keyPassword 'zr-12345'
-            storeFile file('/Users/rz/Documents/github/android/2048/export.keystore')
-            storePassword 'zr-12345'
-        }
-    }
-    compileSdkVersion 22
-    buildToolsVersion '19.1.0'
+    compileSdkVersion 26
     defaultConfig {
-        applicationId "z.cn.hula2048"
-        minSdkVersion 10
-        targetSdkVersion 19
+        applicationId "cn.rz.ai2048"
+        minSdkVersion 23
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
-        //ndk {
-        //    moduleName "ai2"
-        //    ldLibs "log", "z", "m"
-        //    stl "stlport_static"
-        //}
-        signingConfig signingConfigs.ccsign
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
     }
     buildTypes {
         release {
@@ -30,15 +21,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    sourceSets.main {
-        jni.srcDirs = []
-        jniLibs.srcDir 'libs'
-    }
-    productFlavors {
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.+'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }

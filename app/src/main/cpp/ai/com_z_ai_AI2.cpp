@@ -2,6 +2,7 @@
 #include <android/log.h>
 #include "2048.h"
 
+
 #define DLL_PUBLIC
 
 #ifdef __cplusplus

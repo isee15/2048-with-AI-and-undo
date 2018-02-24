@@ -143,7 +143,7 @@ KeyboardInputManager.prototype.keepPlaying = function (event) {
 KeyboardInputManager.prototype.bindButtonPress = function (selector, fn) {
     var button = document.querySelector(selector);
     button.addEventListener("click", fn.bind(this));
-    //button.addEventListener(this.eventTouchend, fn.bind(this));
+    button.addEventListener(this.eventTouchend, fn.bind(this));
 };
 KeyboardInputManager.prototype.undo = function (event) {
     event.preventDefault();

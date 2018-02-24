@@ -344,7 +344,7 @@ GameManager.prototype.run = function () {
 
     var moveResult = eval('(' + best + ')');
     this.move(moveResult["move"]);
-    var timeout = 100;
+    var timeout = 50;
     if (this.running && !this.isGameTerminated()) {
         var self = this;
         setTimeout(function () {
