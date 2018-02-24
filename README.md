@@ -1,6 +1,6 @@
 # 2048-with-AI-and-undo
 ##apk: 
-<a href="2048-ai-undo.apk">2048.apk</a>
+<a href="https://github.com/isee15/2048-with-AI-and-undo/raw/master/2048-ai-undo.apk">2048.apk</a>
 
 ##ref:
 https://github.com/gabrielecirulli/2048
