@@ -1,18 +1,30 @@
 package cn.rz.ai2048;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import com.z.ai.AI2;
 
@@ -28,7 +40,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     private WebView webViewGame;
     private static Map<Long, Long> bitM = new HashMap<Long, Long>();
@@ -104,26 +116,41 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         webViewGame.saveState(outState);
     }
 
     public static Bitmap takeScreenShot(Activity activity) {
+        // 获取windows中最顶层的view
         View view = activity.getWindow().getDecorView();
-        view.setDrawingCacheEnabled(true);
         view.buildDrawingCache();
-        Bitmap b1 = view.getDrawingCache();
-        // Rect frame = new Rect();
-        // int width =
-        // activity.getWindowManager().getDefaultDisplay().getWidth();
-        // int height = activity.getWindowManager().getDefaultDisplay()
-        // .getHeight();
-        //
-        // Bitmap b = Bitmap.createBitmap(b1, 0, 0, width, height);
-        // view.destroyDrawingCache();
-        return b1;
+
+        // 获取状态栏高度
+        Rect rect = new Rect();
+        view.getWindowVisibleDisplayFrame(rect);
+        int statusBarHeights = rect.top;
+        Display display = activity.getWindowManager().getDefaultDisplay();
+
+        Point outSize = new Point();
+        display.getSize(outSize);
+        // 获取屏幕宽和高
+        int widths = outSize.x;
+        int heights = outSize.y;
+
+        // 允许当前窗口保存缓存信息
+        view.setDrawingCacheEnabled(true);
+
+        // 去掉状态栏
+        Bitmap bmp = Bitmap.createBitmap(view.getDrawingCache(), 0,
+                statusBarHeights, widths, heights - statusBarHeights);
+
+        // 销毁缓存信息
+        view.destroyDrawingCache();
+
+        return bmp;
     }
 
-    public static void savePic(Bitmap b, String strFileName) {
+    public void savePic(Bitmap b, File strFileName) {
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(strFileName);
@@ -131,10 +158,15 @@ public class MainActivity extends Activity {
                 b.compress(Bitmap.CompressFormat.PNG, 90, fos);
                 fos.flush();
                 fos.close();
+                MediaStore.Images.Media.insertImage(this.getContentResolver(), b, strFileName.getName(), "2048share");
             }
         } catch (FileNotFoundException e) {
+            Toast.makeText(this, "file not found",
+                    Toast.LENGTH_LONG).show();
             Log.v("-----error-----", e.getMessage());
         } catch (IOException e) {
+            Toast.makeText(this, "io not found",
+                    Toast.LENGTH_LONG).show();
             Log.v("-----error-----", e.getMessage());
         }
     }
@@ -146,25 +178,37 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_share) {
+
             Bitmap bm = this.takeScreenShot(this);
 
-            File dir = new File(Environment.getExternalStorageDirectory()
-                    + "/data/2048/");
-            if (!dir.exists()) {
-                dir.mkdirs();
+            File fileName = new File(this.getFilesDir() + "/2048s.png");
+            if (!fileName.getParentFile().exists()) {
+                fileName.getParentFile().mkdir();
             }
-            String fileName = dir.getAbsolutePath() + "/2048s.png";
-            Log.v("-----save png-----", fileName);
+            Log.v("-----save png-----", fileName.getName());
+
             this.savePic(bm, fileName);
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("image/*");
-            Uri uri = Uri.fromFile(new File(fileName));
-            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+
+            Intent shareIntent = new Intent();
             shareIntent.putExtra(Intent.EXTRA_TEXT,
                     "这2048 也太容易了！https://github.com/isee15/2048-with-AI-and-undo");
             shareIntent.putExtra("Kdescription",
                     "这2048 也太容易了！https://github.com/isee15/2048-with-AI-and-undo");
+            shareIntent.setAction(Intent.ACTION_SEND);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
+                Uri uri= FileProvider.getUriForFile(this,"cn.rz.ai2048.fileprovider",fileName);
+                Log.i("info", "saveScreenshot: "+uri);
+
+                shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                shareIntent.setType("image/*");
+            } else {
+                shareIntent.setDataAndType(Uri.fromFile(fileName), "image/*");
+                shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            }
+
             startActivity(Intent.createChooser(shareIntent, "分享到"));
+
             return true;
         }
         return super.onOptionsItemSelected(item);

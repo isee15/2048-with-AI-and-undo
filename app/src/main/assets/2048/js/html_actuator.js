@@ -55,13 +55,13 @@ HTMLActuator.prototype.addTile = function (tile) {
 
     var wrapper = document.createElement("div");
     var inner = document.createElement("div");
-    var position = tile.previousPosition || { x: tile.x, y: tile.y };
+    var position = tile.previousPosition || {x: tile.x, y: tile.y};
     var positionClass = this.positionClass(position);
 
     // We can't use classlist because it somehow glitches when replacing classes
     var classes = ["tile", "tile-" + tile.value, positionClass];
 
-    if (tile.value > 2048) classes.push("tile-super");
+    if (tile.value > 16384) classes.push("tile-super");
 
     this.applyClasses(wrapper, classes);
 
@@ -71,7 +71,7 @@ HTMLActuator.prototype.addTile = function (tile) {
     if (tile.previousPosition) {
         // Make sure that the tile gets rendered in the previous position first
         window.requestAnimationFrame(function () {
-            classes[2] = self.positionClass({ x: tile.x, y: tile.y });
+            classes[2] = self.positionClass({x: tile.x, y: tile.y});
             self.applyClasses(wrapper, classes); // Update the position
         });
     } else if (tile.mergedFrom) {
@@ -99,7 +99,7 @@ HTMLActuator.prototype.applyClasses = function (element, classes) {
 };
 
 HTMLActuator.prototype.normalizePosition = function (position) {
-    return { x: position.x + 1, y: position.y + 1 };
+    return {x: position.x + 1, y: position.y + 1};
 };
 
 HTMLActuator.prototype.positionClass = function (position) {

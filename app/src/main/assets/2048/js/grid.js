@@ -75,7 +75,7 @@ Grid.prototype.availableCells = function () {
 
     this.eachCell(function (x, y, tile) {
         if (!tile) {
-            cells.push({ x: x, y: y });
+            cells.push({x: x, y: y});
         }
     });
 

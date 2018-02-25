@@ -191,7 +191,7 @@ GameManager.prototype.move = function (direction) {
     // Traverse the grid in the right direction and move tiles
     traversals.x.forEach(function (x) {
         traversals.y.forEach(function (y) {
-            cell = { x: x, y: y };
+            cell = {x: x, y: y};
             tile = self.grid.cellContent(cell);
 
             if (tile) {
@@ -240,10 +240,10 @@ GameManager.prototype.move = function (direction) {
 GameManager.prototype.getVector = function (direction) {
     // Vectors representing tile movement
     var map = {
-        0: { x: 0, y: -1 }, // Up
-        1: { x: 1, y: 0 },  // Right
-        2: { x: 0, y: 1 },  // Down
-        3: { x: -1, y: 0 }   // Left
+        0: {x: 0, y: -1}, // Up
+        1: {x: 1, y: 0},  // Right
+        2: {x: 0, y: 1},  // Down
+        3: {x: -1, y: 0}   // Left
     };
 
     return map[direction];
@@ -251,7 +251,7 @@ GameManager.prototype.getVector = function (direction) {
 
 // Build a list of positions to traverse in the right order
 GameManager.prototype.buildTraversals = function (vector) {
-    var traversals = { x: [], y: [] };
+    var traversals = {x: [], y: []};
 
     for (var pos = 0; pos < this.size; pos++) {
         traversals.x.push(pos);
@@ -271,9 +271,9 @@ GameManager.prototype.findFarthestPosition = function (cell, vector) {
     // Progress towards the vector direction until an obstacle is found
     do {
         previous = cell;
-        cell = { x: previous.x + vector.x, y: previous.y + vector.y };
+        cell = {x: previous.x + vector.x, y: previous.y + vector.y};
     } while (this.grid.withinBounds(cell) &&
-        this.grid.cellAvailable(cell));
+    this.grid.cellAvailable(cell));
 
     return {
         farthest: previous,
@@ -293,12 +293,12 @@ GameManager.prototype.tileMatchesAvailable = function () {
 
     for (var x = 0; x < this.size; x++) {
         for (var y = 0; y < this.size; y++) {
-            tile = this.grid.cellContent({ x: x, y: y });
+            tile = this.grid.cellContent({x: x, y: y});
 
             if (tile) {
                 for (var direction = 0; direction < 4; direction++) {
                     var vector = self.getVector(direction);
-                    var cell = { x: x + vector.x, y: y + vector.y };
+                    var cell = {x: x + vector.x, y: y + vector.y};
 
                     var other = self.grid.cellContent(cell);
 
@@ -324,7 +324,7 @@ GameManager.prototype.gridToJson = function () {
     var result = "";
     for (var x = 0; x < this.size; x++) {
         for (var y = 0; y < this.size; y++) {
-            tile = this.grid.cellContent({ x: y, y: x });
+            tile = this.grid.cellContent({x: y, y: x});
             if (tile) {
                 result += tile.value + ",";
             }

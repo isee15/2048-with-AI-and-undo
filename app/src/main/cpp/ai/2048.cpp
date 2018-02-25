@@ -310,10 +310,11 @@ static float score_board(board_t board) {
 // cprob: cumulative probability
 // don't recurse into a node with a cprob less than this threshold
 static const float CPROB_THRESH_BASE = 0.0001f;
-static const int CACHE_DEPTH_LIMIT  = 15;
+static const int CACHE_DEPTH_LIMIT  = 6;
+static const int SEARCH_DEPTH_LIMIT = 6;
 
 static float score_tilechoose_node(eval_state &state, board_t board, float cprob) {
-    if (cprob < CPROB_THRESH_BASE || state.curdepth >= state.depth_limit) {
+    if (cprob < CPROB_THRESH_BASE || state.curdepth >= state.depth_limit || state.curdepth >= SEARCH_DEPTH_LIMIT) {
         state.maxdepth = std::max(state.curdepth, state.maxdepth);
         return score_heur_board(board);
     }
